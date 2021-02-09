@@ -13,7 +13,10 @@ def getAnimals():
 
 @app.route('/animals/<id>', methods=['GET'])
 def getAnimal(id):
-    return jsonify(list(filter(lambda a: a['id'] == id, animals)))
+    animal = list(filter(lambda a: a['id'] == id, animals))
+    if len(animal) > 0:
+        return jsonify(animal[0])
+    return jsonify({"message": "Animal not found"})
 
 
 
