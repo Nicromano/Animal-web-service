@@ -8,32 +8,42 @@ app = Flask(__name__)
 def ping():
     return jsonify({"message": 'pong'})
 
-
+#Ruta animals usando metodo GET
 @app.route('/animals', methods=['GET'])
-def getAnimals():
-    return jsonify(animals)
+def getAnimals(): #se llama cuando se solicita la ruta
+    return jsonify(animals) #jsonify devuelve un tipo JSON de los animales
 
 
+#Ruta de un animal buscado mediante id, metodo GET
 @app.route('/animals/<id>', methods=['GET'])
 def getAnimal(id):
+    #Se filtra entre el arreglo para encontrar el animal 
     animal = list(filter(lambda a: a['id'] == id, animals))
-    if len(animal) > 0:
-        return jsonify(animal[0])
+    #validamos si existe un animal, para evitar errores
+    if len(animal) > 0: 
+        return jsonify(animal[0]) #retorna el JSON con el animal
+    #Envia un mensaje de error en formato JSON
     return jsonify({"message": "Animal not found"})
 
+#Ruta para actualizar un animal con ID especifico mediante metodo PUT
 @app.route('/animals/<id>', methods=['PUT'])
 def updateAnimal(id):
+    #Se busca el animal entre el arreglo de animales
     animal = [animal for animal in animals if animal['id'] == id ]
+    #Se valida que se haya encontrado el animal
     if len(animal) > 0: 
+        #Se actualiza los campos de los animales
         animal[0]['id'] = request.json['id']
         animal[0]['animal_name'] = request.json['animal_name']
         animal[0]['scientific_name'] = request.json['scientific_name']
         animal[0]['gender'] = request.json['gender']
         animal[0]['age'] = request.json['age']
+        #retorna un JSON con un mensaje de actualización
         return jsonify({
             "message": "Animal updated", 
             "animal": animal[0]
         })
+    #Envia un mensaje de error en formato JSON
     return jsonify({
         "message": "Animal not found"
     })
