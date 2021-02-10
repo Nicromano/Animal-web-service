@@ -23,15 +23,33 @@ def getAnimal(id):
 
 @app.route('/animals/<id>', methods=['PUT'])
 def updateAnimal(id):
-    animal = list(filter(lambda a: a['id'] == id, animals))
+    animal = [animal for animal in animals if animal['id'] == id ]
     if len(animal) > 0: 
         animal[0]['id'] = request.json['id']
         animal[0]['animal_name'] = request.json['animal_name']
         animal[0]['scientific_name'] = request.json['scientific_name']
         animal[0]['gender'] = request.json['gender']
         animal[0]['age'] = request.json['age']
-        
+        return jsonify({
+            "message": "Animal updated", 
+            "animal": animal[0]
+        })
+    return jsonify({
+        "message": "Animal not found"
+    })
 
+@app.route('/animals/<id>', methods=['DELETE'])
+def deleteAnimal(id):
+    animal = [animal for animal in animals if animal['id'] == id]
+    if len(animal) > 0:
+        animals.remove(animal[0])
+        return jsonify({
+            "message": "Animal deleted",
+            "animal": animals
+        })
+    return jsonify({
+        "message": "Animal not found"
+    })
 
 @app.route('/animals', methods=['POST'])
 def addAnimal():
